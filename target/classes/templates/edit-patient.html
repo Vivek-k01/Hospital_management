@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Edit Patient Details</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #f4f7f6; display: flex; justify-content: center; padding-top: 50px; }
+        .edit-container { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 400px; }
+        h2 { color: #1b75d0; margin-bottom: 20px; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 4px; }
+        .btn-update { background: #1b75d0; color: white; border: none; width: 100%; padding: 12px; cursor: pointer; border-radius: 4px; font-weight: bold; }
+        .btn-back { display: block; text-align: center; margin-top: 15px; color: #666; text-decoration: none; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <div class="edit-container">
+        <h2>Update Patient</h2>
+        <form th:action="@{/updatePatient}" th:object="${patient}" method="POST">
+            <input type="hidden" th:field="*{id}">
+            
+            <label>Patient Name</label>
+            <input type="text" th:field="*{name}" required>
+            
+            <label>Disease</label>
+            <input type="text" th:field="*{disease}" required>
+            
+            <label>Age</label>
+            <input type="number" th:field="*{age}" required>
+            
+            <button type="submit" class="btn-update">Save Changes</button>
+            <a href="/" class="btn-back">Cancel & Go Back</a>
+        </form>
+    </div>
+</body>
+</html>
