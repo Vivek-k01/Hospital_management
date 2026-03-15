@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Staff Management | Lifeline HMS</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f4f7f6; margin: 0; padding: 40px; }
+        .header-area { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .table-box { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        table { width: 100%; border-collapse: collapse; }
+        th { background: #1b75d0; color: white; padding: 12px; text-align: left; }
+        td { padding: 12px; border-bottom: 1px solid #eee; font-size: 14px; }
+        .shift-badge { padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; }
+        .morning { background: #fff3e0; color: #ef6c00; }
+        .evening { background: #e3f2fd; color: #1565c0; }
+        .night { background: #f3e5f5; color: #7b1fa2; }
+        #staffSearch { padding: 10px; width: 300px; border-radius: 5px; border: 1px solid #ddd; }
+        .back-btn { text-decoration: none; color: #1b75d0; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <a th:href="@{/}" class="back-btn">← Dashboard Par Wapas Jayein</a>
+    <div class="header-area">
+        <h2>HOSPITAL STAFF MEMBERS</h2>
+        <input type="text" id="staffSearch" onkeyup="searchStaff()" placeholder="Search staff by name or dept...">
+    </div>
+
+    <div class="table-box">
+        <table id="staffTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Role</th>
+                    <th>Department</th>
+                    <th>Shift</th>
+                    <th>Contact</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="s : ${listStaff}">
+                    <td th:text="${s.id}"></td>
+                    <td th:text="${s.name}" style="font-weight:bold"></td>
+                    <td th:text="${s.role}"></td>
+                    <td th:text="${s.department}"></td>
+                    <td>
+                        <span th:class="'shift-badge ' + ${#strings.toLowerCase(s.shift)}" th:text="${s.shift}"></span>
+                    </td>
+                    <td th:text="${s.contact}"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        function searchStaff() {
+            let input = document.getElementById("staffSearch").value.toUpperCase();
+            let tr = document.getElementById("staffTable").getElementsByTagName("tr");
+            for (let i = 1; i < tr.length; i++) {
+                let text = tr[i].innerText.toUpperCase();
+                tr[i].style.display = text.indexOf(input) > -1 ? "" : "none";
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Doctor Information | Lifeline HMS</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f4f7f6; padding: 40px; }
+        .container { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h2 { color: #1b75d0; margin-bottom: 25px; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        table { width: 100%; border-collapse: collapse; }
+        th { background: #1b75d0; color: white; padding: 12px; text-align: left; }
+        td { padding: 12px; border-bottom: 1px solid #eee; }
+        tr:hover { background-color: #f9f9f9; }
+        .back-btn { display: inline-block; margin-bottom: 20px; text-decoration: none; color: #1b75d0; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a th:href="@{/}" class="back-btn">← Back to Dashboard</a>
+        <h2>Our Specialist Doctors</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Doctor Name</th>
+                    <th>Specialization</th>
+                    <th>Age</th>
+                    <th>Experience</th>
+                    <th>Contact</th>
+                </tr>
+            </thead>
+<tbody>
+    <tr th:each="doc : ${listDoctors}">
+        <td th:text="${doc.id}"></td>
+        <td th:text="${doc.name}" style="font-weight: bold;"></td>
+        <td th:text="${doc.specialization}"></td>
+        <td th:text="${doc.age}"></td>
+        <td th:text="${doc.experience}"></td>
+        <td th:text="${doc.contact}"></td>
+    </tr>
+</tbody>
+        </table>
+    </div>
+</body>
+</html>

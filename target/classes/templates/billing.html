@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Patient Billing | Lifeline HMS</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f4f7f6; margin: 0; padding: 30px; }
+        .max-container { max-width: 1200px; margin: auto; }
+        .stats-grid { display: flex; gap: 20px; margin-bottom: 30px; }
+        .stat-card { background: white; padding: 20px; border-radius: 10px; flex: 1; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        
+        /* Revenue Hide Style */
+        .revenue-box { display: flex; align-items: center; gap: 10px; }
+        .amount-hidden { filter: blur(5px); user-select: none; }
+        .eye-btn { cursor: pointer; font-size: 18px; border: none; background: none; }
+
+        /* Search Section */
+        .search-section { background: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; display: flex; gap: 10px; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .search-input { flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 5px; font-size: 16px; }
+        .search-btn { padding: 12px 25px; background: #1b75d0; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .search-btn:hover { background: #155ba1; }
+
+        .table-container { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        table { width: 100%; border-collapse: collapse; }
+        th { background: #1b75d0; color: white; padding: 15px; text-align: left; }
+        td { padding: 15px; border-bottom: 1px solid #eee; }
+        
+        .status-paid { color: #2e7d32; background: #e8f5e9; padding: 5px 10px; border-radius: 4px; font-weight: bold; font-size: 12px; }
+        .status-pending { color: #d32f2f; background: #ffebee; padding: 5px 10px; border-radius: 4px; font-weight: bold; font-size: 12px; }
+        .back-btn { text-decoration: none; color: #1b75d0; font-weight: bold; display: inline-block; margin-bottom: 20px; }
+        
+        .error-msg { color: #d32f2f; background: #fdecea; padding: 10px; border-radius: 5px; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <div class="max-container">
+        <a th:href="@{/}" class="back-btn">← Back to Dashboard</a>
+        <h2>PATIENT INVOICES & BILLING DASHBOARD</h2>
+
+        <div th:if="${error}" class="error-msg" th:text="${error}"></div>
+
+        <div class="search-section">
+            <form th:action="@{/billing/search}" method="get" style="display: flex; width: 100%; gap: 10px;">
+                <input type="text" name="phone" class="search-input" placeholder="Enter Patient Mobile Number to Generate Bill..." required>
+                <button type="submit" class="search-btn">Generate Bill</button>
+            </form>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>TOTAL REVENUE</h3>
+                <div class="revenue-box">
+                    <p id="revAmount" class="amount-hidden" style="font-size: 24px; font-weight: bold; margin: 0;">
+                        ₹ <span th:text="${totalRevenue}">0.0</span>
+                    </p>
+                    <button class="eye-btn" onclick="toggleRevenue()">👁️</button>
+                </div>
+            </div>
+            <div class="stat-card"><h3>TOTAL INVOICES</h3><p style="font-size: 24px; font-weight: bold; margin: 0;" th:text="${#lists.size(listBills)}">0</p></div>
+            <div class="stat-card"><h3>STATUS</h3><p style="font-size: 18px; font-weight: bold; color: #666; margin: 0;">Live Billing Active</p></div>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Inv. ID</th>
+                        <th>Mobile Number</th>
+                        <th>Doc Fees</th>
+                        <th>Room Charges</th>
+                        <th>Pharmacy</th>
+                        <th>Total Amount</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="bill : ${listBills}">
+                        <td th:text="'BILL-' + ${bill.id}"></td>
+                        <td th:text="${bill.patientPhone}" style="font-weight: bold;"></td>
+                        <td th:text="'₹' + ${bill.doctorFee}"></td>
+                        <td th:text="'₹' + ${bill.roomCharges}"></td>
+                        <td th:text="'₹' + ${bill.pharmacyCharges}"></td>
+                        <td th:text="'₹' + ${bill.totalAmount}" style="font-weight: bold; color: #1b75d0;"></td>
+                        <td>
+                            <span th:class="${bill.paymentStatus == 'Paid'} ? 'status-paid' : 'status-pending'" 
+                                  th:text="${bill.paymentStatus}"></span>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(listBills)}">
+                        <td colspan="7" style="text-align: center; color: #999;">No billing records found.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        function toggleRevenue() {
+            var amount = document.getElementById("revAmount");
+            if (amount.classList.contains("amount-hidden")) {
+                amount.classList.remove("amount-hidden");
+            } else {
+                amount.classList.add("amount-hidden");
+            }
+        }
+    </script>
+</body>
+</html>

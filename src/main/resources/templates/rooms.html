@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Room Availability | Lifeline HMS</title>
+    <style>
+        body { background-color: #5d9391; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .main-box { width: 85%; border: 3px solid white; padding: 20px; position: relative; }
+        h2 { color: white; text-align: center; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 2px; }
+        table { width: 100%; border-collapse: collapse; color: white; }
+        th { text-align: left; padding: 12px; border-bottom: 2px solid white; font-size: 18px; }
+        td { padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.2); font-size: 16px; }
+        .back-btn { display: block; width: 120px; margin: 30px auto 10px; padding: 10px; background: black; color: white; text-align: center; text-decoration: none; font-weight: bold; border: none; cursor: pointer; }
+        .back-btn:hover { background: #333; }
+    </style>
+</head>
+<body>
+    <div class="main-box">
+        <h2>Room & Bed Availability Status</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Room No.</th>
+                    <th>Availability</th>
+                    <th>Price (Per Day)</th>
+                    <th>Bed Type</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="room : ${listRooms}">
+                    <td th:text="${room.roomNo}"></td>
+                    <td th:text="${room.availability}" th:style="${room.availability == 'Occupied' ? 'color: #ffcccc' : 'color: #ccffcc'}"></td>
+                    <td th:text="'₹ ' + ${room.price}"></td>
+                    <td th:text="${room.bedType}"></td>
+                </tr>
+            </tbody>
+        </table>
+        <a th:href="@{/}" class="back-btn">BACK</a>
+    </div>
+</body>
+</html>

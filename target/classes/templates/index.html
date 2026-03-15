@@ -2,138 +2,204 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Lifeline Hospital Management</title>
+    <title>Lifeline Hospital Management | Dashboard</title>
+    
     <style>
-        /* CSS resets and base styles */
+        /* --- AAPKI ORIGINAL BASE STYLES --- */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
         body { background-color: #f4f7f6; }
-        
-        /* Blue Header Bar */
-        .header { background-color: #1b75d0; color: white; padding: 20px 50px; display: flex; align-items: center; gap: 15px; }
-        .header h1 { font-size: 24px; }
 
+        /* --- SIDEBAR & HAMBURGER (Same as your original) --- */
+        .menu-container { display: inline-block; cursor: pointer; z-index: 3000; transition: 0.3s; padding: 5px; }
+        .bar1, .bar2, .bar3 { width: 28px; height: 3px; background-color: white; margin: 5px 0; transition: 0.4s; border-radius: 2px; }
+        .change .bar1 { transform: translate(0, 8px) rotate(-45deg); }
+        .change .bar2 { opacity: 0; }
+        .change .bar3 { transform: translate(0, -8px) rotate(45deg); }
+
+        .sidebar { height: 100%; width: 0; position: fixed; z-index: 2000; top: 0; left: 0; background-color: #111; overflow-x: hidden; transition: 0.5s; padding-top: 80px; box-shadow: 4px 0 15px rgba(0,0,0,0.5); }
+        .sidebar a { padding: 15px 25px; text-decoration: none; font-size: 18px; color: #818181; display: block; transition: 0.3s; border-bottom: 1px solid #222; }
+        .sidebar a:hover { color: #f1f1f1; background-color: #1b75d0; padding-left: 35px; }
+
+        /* --- HEADER & PROFILE (Same as your original) --- */
+        .header { background: #1b75d0; color: white; padding: 0 40px; height: 70px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.2); position: sticky; top: 0; z-index: 2500; }
+        .header-left { display: flex; align-items: center; gap: 15px; }
+        .user-profile-wrapper { position: relative; display: flex; align-items: center; gap: 12px; height: 100%; cursor: pointer; }
+        .user-info { text-align: right; }
+        .user-info .welcome { font-size: 11px; opacity: 0.8; display: block; }
+        .user-info .username { font-size: 14px; font-weight: 600; }
+        .profile-circle { width: 40px; height: 40px; background-color: #ffffff; color: #1b75d0; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 18px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); text-transform: uppercase; }
+
+        /* --- DROPDOWN (Fixed) --- */
+        .dropdown-menu { display: none; position: absolute; right: 0; top: 70px; background: white; min-width: 180px; border-radius: 0 0 8px 8px; box-shadow: 0 8px 16px rgba(0,0,0,0.1); z-index: 1001; border: 1px solid #eee; }
+        .user-profile-wrapper:hover .dropdown-menu { display: block; }
+        .dropdown-menu a { color: #333; padding: 12px 16px; text-decoration: none; display: block; font-size: 14px; border-bottom: 1px solid #f9f9f9; }
+        .dropdown-menu a:hover { background: #f1f1f1; }
+
+        /* --- LAYOUT & CARDS --- */
         .container { padding: 30px 50px; }
-
-        /* Stats Cards (Total Patients, etc.) */
         .stats-container { display: flex; gap: 20px; margin-bottom: 30px; }
-        .card { background: white; flex: 1; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 20px; }
-        .card .icon { font-size: 40px; background: #e3f2fd; padding: 15px; border-radius: 8px; color: #1b75d0; }
-        .card .info h3 { font-size: 14px; color: #666; text-transform: uppercase; }
-        .card .info p { font-size: 28px; font-weight: bold; color: #333; }
+        .card { background: white; flex: 1; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 20px; border-left: 5px solid #1b75d0; }
+        .card .icon { font-size: 35px; background: #e3f2fd; padding: 12px; border-radius: 8px; color: #1b75d0; }
+        .card .info h3 { font-size: 13px; color: #666; text-transform: uppercase; }
+        .card .info p { font-size: 24px; font-weight: bold; color: #333; }
 
-        /* Side-by-Side Layout */
-        .main-layout { display: flex; gap: 25px; }
+        .main-layout { display: flex; gap: 25px; align-items: flex-start; }
         .box { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .registration-box { flex: 1; height: fit-content; }
-        .list-box { flex: 2; }
+        .registration-box { flex: 1; position: sticky; top: 100px; }
+        .list-box { flex: 2.2; }
 
-        h2 { margin-bottom: 20px; font-size: 18px; color: #444; border-bottom: 2px solid #eee; padding-bottom: 10px; }
-
-        /* Form Styling */
+        /* --- FORM STYLES (Original) --- */
+        h2 { margin-bottom: 20px; font-size: 18px; color: #444; border-bottom: 2px solid #eee; padding-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
         .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 14px; }
-        input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; }
-        .btn-register { width: 100%; background: #28a745; color: white; border: none; padding: 12px; border-radius: 4px; cursor: pointer; font-weight: bold; margin-top: 10px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 13px; color: #555; }
+        input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; }
+        .btn-register { width: 100%; background: #28a745; color: white; border: none; padding: 12px; border-radius: 4px; cursor: pointer; font-weight: bold; margin-top: 10px; transition: 0.3s; }
+        .btn-register:hover { background: #218838; }
 
-        /* Table Styling */
-        table { width: 100%; border-collapse: collapse; }
-        th { background: #f8f9fa; text-align: left; padding: 12px; border-bottom: 2px solid #eee; color: #555; }
-        td { padding: 12px; border-bottom: 1px solid #eee; font-size: 15px; }
-        
-        .status-badge { background: #e8f5e9; color: #2e7d32; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; }
-        
-        /* Action Buttons Styling */
-        .action-btns { display: flex; gap: 8px; }
-        .btn-view { background: #1b75d0; color: white; padding: 6px 12px; text-decoration: none; border-radius: 4px; font-size: 13px; }
-        .btn-discharge { background: #dc3545; color: white; padding: 6px 12px; text-decoration: none; border-radius: 4px; font-size: 13px; }
+        /* --- TABLE & DATE SEPARATOR (Added/Fixed) --- */
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th { background: #f8f9fa; text-align: left; padding: 12px; border-bottom: 2px solid #eee; color: #666; font-size: 13px; }
+        td { padding: 12px; border-bottom: 1px solid #eee; font-size: 14px; color: #444; }
+
+        /* Nayi Date ki patti */
+        .date-row { background: #f0f4f8 !important; }
+        .date-separator { padding: 10px 15px; font-weight: bold; color: #1b75d0; font-size: 14px; border-left: 5px solid #1b75d0; }
+
+        /* Badge & Buttons */
+        .status-badge { background: #e8f5e9; color: #2e7d32; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; }
+        .btn-view { background: #1b75d0; color: white; padding: 6px 12px; text-decoration: none; border-radius: 4px; font-size: 12px; }
+        .btn-discharge { background: #dc3545; color: white; padding: 6px 12px; text-decoration: none; border-radius: 4px; font-size: 12px; margin-left: 5px; }
+
+        /* --- MODAL (Original) --- */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 4000; justify-content: center; align-items: center; }
+        .modal-box { background: white; padding: 30px; border-radius: 12px; text-align: center; width: 350px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <span>🏥</span>
-        <h1>Lifeline Hospital Management System</h1>
+    <div id="mySidebar" class="sidebar">
+        <div style="color: white; padding: 20px; font-weight: bold; font-size: 20px; border-bottom: 1px solid #333;">HMS MENU</div>
+        <a th:href="@{/rooms}">🏨 Room Details</a>
+        <a th:href="@{/doctors}">👨‍⚕️ Doctor Info</a>
+        <a th:href="@{/pharmacy}">💊 Pharmacy</a>
+        <a th:href="@{/billing}">📄 Billing</a>
+        <a th:href="@{/staff}">👥 Staff Members</a>
+        <a th:href="@{/emergency}" style="color: #dc3545;">🚨 Emergency</a>
+        <a href="javascript:void(0)" onclick="openLogoutModal()" style="color: #dc3545; margin-top: 40px;">🚪 Logout</a>
     </div>
+
+    <header class="header">
+        <div class="header-left">
+            <div class="menu-container" id="menuBtn" onclick="toggleNav(this)">
+                <div class="bar1"></div><div class="bar2"></div><div class="bar3"></div>
+            </div>
+            <span style="font-size: 24px; margin-left: 10px;">🏥</span>
+            <h1 style="font-size: 22px; letter-spacing: 1px;">Lifeline HMS</h1>
+            <div id="currentDateTime" style="margin-left: 20px; font-size: 13px; background: rgba(255,255,255,0.2); padding: 5px 12px; border-radius: 20px;"></div>
+        </div>
+
+        <div class="user-profile-wrapper">
+            <div class="user-info">
+                <span class="welcome">Welcome back</span>
+                <span class="username" th:text="${#authentication.name}">Admin</span>
+            </div>
+            <div class="profile-circle" th:with="user=${#authentication.name}" th:text="${#strings.substring(user,0,1)}">A</div>
+            <div class="dropdown-menu">
+                <a href="#">My Profile</a>
+                <a href="javascript:void(0)" onclick="openLogoutModal()" style="color: #dc3545; font-weight: bold;">Logout</a>
+            </div>
+        </div>
+    </header>
 
     <div class="container">
         <div class="stats-container">
-            <div class="card">
-                <div class="icon">👥</div>
-                <div class="info">
-                    <h3>Total Patients</h3>
-                    <p th:text="${totalPatients}">0</p>
-                </div>
-            </div>
-            <div class="card">
-                <div class="icon">📅</div>
-                <div class="info">
-                    <h3>Today's Appointments</h3>
-                    <p>38</p>
-                </div>
-            </div>
-            <div class="card">
-                <div class="icon">👨‍⚕️</div>
-                <div class="info">
-                    <h3>Available Doctors</h3>
-                    <p>15</p>
-                </div>
-            </div>
+            <div class="card"><div class="icon">👥</div><div class="info"><h3>Total Patients</h3><p th:text="${totalPatients}">0</p></div></div>
+            <div class="card" style="border-left-color: #28a745;"><div class="icon" style="color:#28a745; background:#e8f5e9;">📅</div><div class="info"><h3>Available Slots</h3><p th:text="${activeAppointments}">50</p></div></div>
+            <div class="card" style="border-left-color: #ff9800;"><div class="icon" style="color:#ff9800; background:#fff3e0;">⏰</div><div class="info"><h3 id="shiftName">Shift</h3><p id="liveClock" style="font-size: 20px;">00:00:00</p></div></div>
         </div>
 
         <div class="main-layout">
-            
             <div class="box registration-box">
-                <h2>PATIENT REGISTRATION</h2>
+                <h2>New Registration</h2>
                 <form th:action="@{/savePatient}" method="POST">
-                    <div class="form-group">
-                        <label>Patient Name</label>
-                        <input type="text" name="name" placeholder="Enter full name" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Disease / Ailment</label>
-                        <input type="text" name="disease" placeholder="E.g. Viral Fever" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Age</label>
-                        <input type="number" name="age" placeholder="Age" required>
-                    </div>
-                    <button type="submit" class="btn-register">Register Patient</button>
+                    <div class="form-group"><label>Name</label><input type="text" name="name" required></div>
+                    <div class="form-group"><label>Disease</label><input type="text" name="disease" required></div>
+                    <div class="form-group"><label>Age</label><input type="number" name="age" required></div>
+                    <div class="form-group"><label>Phone</label><input type="text" name="phone" required></div>
+                    <input type="hidden" name="status" value="Admitted">
+                    <button type="submit" class="btn-register">Register Now</button>
                 </form>
             </div>
 
             <div class="box list-box">
-                <h2>PATIENT LIST</h2>
+                <div style="margin-bottom: 20px;">
+                    <form th:action="@{/}" method="get" style="display: flex; gap: 10px;">
+                        <input type="text" name="search" placeholder="Search by Name or Phone..." style="flex: 1;">
+                        <button type="submit" class="btn-view" style="padding: 10px 20px; border: none; cursor: pointer;">Search</button>
+                        <a th:href="@{/}" class="btn-discharge" style="background:#6c757d; padding: 10px;">Reset</a>
+                    </form>
+                </div>
+
+                <h2>Patient List</h2>
                 <table>
                     <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Patient Name</th>
-                            <th>Disease</th>
-                            <th>Age</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
+                        <tr><th>ID</th><th>Patient Name</th><th>Disease</th><th>Age</th><th>Phone</th><th>Status</th><th>Actions</th></tr>
                     </thead>
                     <tbody>
-                        <tr th:each="patient : ${listPatients}">
-                            <td th:text="${patient.id}"></td>
-                            <td th:text="${patient.name}"></td>
-                            <td th:text="${patient.disease}"></td>
-                            <td th:text="${patient.age}"></td>
-                            <td><span class="status-badge">Admitted</span></td>
-                            <td>
-                                <div class="action-btns">
-                                    <a th:href="@{/editPatient/{id}(id=${patient.id})}" class="btn-view">View/Edit</a>
-                                    
+                        <th:block th:each="patient, iterStat : ${listPatients}">
+                            <tr class="date-row" th:if="${iterStat.first or patient.registrationDate != listPatients[iterStat.index - 1].registrationDate}">
+                                <td colspan="6" class="date-separator">
+                                    📅 <span th:text="${#temporals.format(patient.registrationDate, 'dd MMMM yyyy')}"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td th:text="${patient.dailyId}" style="color: #1b75d0; font-weight: bold;"></td>
+                                <td th:text="${patient.name}" style="font-weight: 600;"></td>
+                                <td th:text="${patient.disease}"></td>
+                                <td th:text="${patient.age}"></td>
+                                <td th:text="${patient.phone}"></td>
+                                <td><span class="status-badge" th:text="${patient.status}"></span></td>
+                                <td>
+                                    <a th:href="@{/editPatient/{id}(id=${patient.id})}" class="btn-view">Edit</a>
                                     <a th:href="@{/deletePatient/{id}(id=${patient.id})}" class="btn-discharge">Discharge</a>
-                                </div>
-                            </td>
-                        </tr>
+                                </td>
+                            </tr>
+                        </th:block>
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
 
+    <div id="logoutModal" class="modal-overlay">
+        <div class="modal-box">
+            <h3>Logout?</h3>
+            <p style="margin: 15px 0; color: #666;">Bhai, are you sure you want to exit?</p>
+            <div style="display: flex; gap: 10px; justify-content: center;">
+                <button onclick="closeLogoutModal()" style="padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer;">Cancel</button>
+                <a th:href="@{/logout}" style="background: #dc3545; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px;">Logout</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleNav(x) {
+            x.classList.toggle("change");
+            let sidebar = document.getElementById("mySidebar");
+            sidebar.style.width = sidebar.style.width === "250px" ? "0" : "250px";
+        }
+        function openLogoutModal() { document.getElementById('logoutModal').style.display = 'flex'; }
+        function closeLogoutModal() { document.getElementById('logoutModal').style.display = 'none'; }
+
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('liveClock').innerText = now.toLocaleTimeString('en-IN');
+            const hrs = now.getHours();
+            document.getElementById('shiftName').innerText = (hrs >= 8 && hrs < 20) ? "☀️ Day Shift" : "🌙 Night Shift";
+            document.getElementById('currentDateTime').innerText = "📅 " + now.toLocaleDateString('en-IN', {day:'numeric', month:'long', year:'numeric'});
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+    </script>
 </body>
 </html>

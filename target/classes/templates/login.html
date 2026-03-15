@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Lifeline HMS | Login</title>
+    <style>
+        :root { --primary: #1b75d0; --bg: #f0f4f8; }
+        body { background: var(--bg); font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .login-box { background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 350px; border-top: 6px solid var(--primary); }
+        h2 { text-align: center; color: var(--primary); margin-bottom: 25px; }
+        .error { color: red; background: #fee2e2; padding: 10px; border-radius: 5px; margin-bottom: 15px; font-size: 13px; text-align: center; }
+        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        button:hover { background: #115293; }
+        p { text-align: center; font-size: 12px; color: #888; margin-top: 15px; }
+    </style>
+</head>
+<body>
+    <div class="login-box" style="border-left: 5px solid #ff9800;">
+        <h2>🏥 Lifeline HMS</h2>
+        
+        <div th:if="${param.error}" class="error">Galti! Username ya Password sahi nahi hai.</div>
+        <div th:if="${param.logout}" style="color: green; text-align: center; margin-bottom: 10px;">Aap logout ho gaye hain.</div>
+
+        <form th:action="@{/login}" method="post">
+            <input type="text" name="username" placeholder="Username " required autofocus>
+            <input type="password" name="password" placeholder="Password " required>
+          <button 
+style="padding:10px 20px; background-color:#0bbcd7; color:rgb(29, 23, 23); border:none; border-radius:5px; cursor:pointer;"
+onmouseover="this.style.backgroundColor='aqua'"
+onmouseout="this.style.backgroundColor='seagreen'">
+Login
+</button>
+
+        </form>
+        <p>© 2026 Lifeline Hospital Management</p>
+    </div>
+</body>
+</html>

@@ -1,4 +1,4 @@
-package com.example.securtiy; // Apni spelling check karein (securtiy ya security)
+package com.example.securtiy;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,15 +14,21 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class SecurityConfig {
 
     @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable()) 
+            .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/login", "/css/**", "/js/**").permitAll()
-                .anyRequest().authenticated()
+                .requestMatchers("/login", "/css/**", "/js/**").permitAll() 
+                .anyRequest().authenticated() 
             )
             .formLogin(form -> form
-                .defaultSuccessUrl("/", true)
+                .loginPage("/login") 
+                .defaultSuccessUrl("/", true) 
                 .permitAll()
             )
             .logout(logout -> logout
@@ -31,22 +37,16 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // BCrypt use karne se NoOp ki error khatam ho jayegi
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
     @Bean
     public InMemoryUserDetailsManager userDetailsService() {
-        // Password ko encode karke likhna hoga
-        String encodedPassword = passwordEncoder().encode("admin123");
+        // Aapka ID: naino | Password: naino123
+        String encodedPassword = passwordEncoder().encode("vivek1234"); 
 
-        UserDetails admin = User.withUsername("admin")
+        UserDetails user = User.withUsername("vivek") 
             .password(encodedPassword)
             .roles("ADMIN")
             .build();
             
-        return new InMemoryUserDetailsManager(admin);
+        return new InMemoryUserDetailsManager(user);
     }
 }
